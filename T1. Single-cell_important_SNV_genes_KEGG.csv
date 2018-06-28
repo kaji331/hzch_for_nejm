@@ -1,0 +1,2 @@
+,ID,Description,GeneRatio,BgRatio,pvalue,p.adjust,qvalue,geneID,Count
+hsa04672,hsa04672,Intestinal immune network for IgA production,2/7,49/7276,0.000913198459763247,0.0283091522526606,0.0221090153416365,HLA-DRB1/MADCAM1,2

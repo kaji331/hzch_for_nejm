@@ -1,0 +1,11 @@
+ANNOVAR Version:
+	$Date: 2016-02-01 00:11:04 -0800 (Mon,  1 Feb 2016) $
+ANNOVAR Information:
+	For questions, comments, documentation, bug reports and program update, please visit http://www.openbioinformatics.org/annovar/
+ANNOVAR Command:
+	/home/cancer/Public/ANNOVAR/annovar/annotate_variation.pl --regionanno common_cna_insignificant.avinput /home/cancer/Public/ANNOVAR/annovar/humandb/ --dbtype bed --bedfile hg19_refGene_from_UCSC.sorted.bed --colsWanted 4 --buildver hg19 --outfile common_cna_insignificant.avoutput
+ANNOVAR Started:
+	Thu Jul 20 16:52:23 2017
+NOTICE: Output file is written to common_cna_insignificant.avoutput.hg19_bed
+NOTICE: Reading annotation database /home/cancer/Public/ANNOVAR/annovar/humandb/hg19_refGene_from_UCSC.sorted.bed ... Done with 62512 regions
+NOTICE: Finished region-based annotation on 9626 genetic variants
