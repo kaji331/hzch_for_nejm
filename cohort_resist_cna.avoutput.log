@@ -1,0 +1,11 @@
+ANNOVAR Version:
+	$Date: 2016-02-01 00:11:04 -0800 (Mon,  1 Feb 2016) $
+ANNOVAR Information:
+	For questions, comments, documentation, bug reports and program update, please visit http://www.openbioinformatics.org/annovar/
+ANNOVAR Command:
+	/home/cancer/Public/ANNOVAR/annovar/annotate_variation.pl --regionanno cohort_resist_cna.avinput /home/cancer/Public/ANNOVAR/annovar/humandb/ --dbtype bed --bedfile hg19_refGene_from_UCSC.sorted.bed --colsWanted 4 --buildver hg19 --outfile cohort_resist_cna.avoutput
+ANNOVAR Started:
+	Fri Jun 29 14:34:25 2018
+NOTICE: Output file is written to cohort_resist_cna.avoutput.hg19_bed
+NOTICE: Reading annotation database /home/cancer/Public/ANNOVAR/annovar/humandb/hg19_refGene_from_UCSC.sorted.bed ... Done with 62512 regions
+NOTICE: Finished region-based annotation on 78 genetic variants

@@ -1207,7 +1207,7 @@ draw.quad.venn(21,15113,3279,14694,16,8,18,2407,10562,2457,7,14,7,1853,6,
                lty=1:4,fontfamily=rep("sans",15),cat.fontfamily=rep("sans",4))
 # ------
 
-# ============================================================================
+# ==============================================================================
 
 # Unifying data/method of analysis
 # Which cnv in 23 cm was covered by cnv_cohort_region
@@ -2443,3 +2443,67 @@ rownames(a) <- c("chr1_147415551_151079698","chr3_20044101_31703623",
 data.table::fwrite(as.data.frame(a),
                    file="~/Documents/cohort/ESCC/for_NEJM/new_region.tsv",
                    row.names=T,sep="\t")
+
+sapply(a[,"CytoBand"],function(x) any(str_split(x,",")[[1]] %in% cyto))
+# ======
+
+# ==============================================================================
+
+# Venn of radioresistance
+# ------
+# If I used the cytobands with significant higher frequency after irradiation, I
+# won't get intersection of single-cell and cohort.
+
+# Get the "temp" of single-cell CNA, then find radioresistance in radio-relation
+sc_resist_cna <- apply(temp[c(1:632,1219:1910),],1,function(x) {
+  a <- x[1:30] %>>% (length(.[. != 0]))
+  b <- x[31:45] %>>% (length(.[. != 0]))
+  matrix(c(a,b,30-a,15-b),nrow=2) %>>% 
+    (fisher.test(.,alternative="greater")$p.val >= 0.05)
+}) %>>% (cyto[.]) %>>% (cnv_23[cnv_23$an23.cytoBand %in% .,]) %>>% rownames
+# Get the "temp" of cohort CNA, then find radioresistance in radio-relation
+cohort_resist_cna <- apply(temp[1:28,],1,function(x) {
+  a <- x[1:95] %>>% (length(.[. != 0]))
+  b <- x[96:149] %>>% (length(.[. != 0]))
+  matrix(c(a,b,95-a,54-b),nrow=2) %>>% 
+    (fisher.test(.,alternative="greater")$p.val >= 0.05)
+}) %>>% (cyto_cohort[.]) %>>% (cytoBand[cytoBand$V2 %in% .,"."]) %>>% 
+  as.character %>>% unique
+index1 <- sapply(sc_resist_cna,grep,x=cna_common$sc23) %>>% unlist %>>% unique
+index2 <- sapply(cohort_resist_cna,grep,x=cna_common$cohort) %>>% unlist %>>% 
+  unique
+cna_common_resist <- cna_common[intersect(index1,index2),]
+paste(cna_common_resist$sc23,collapse=",") %>>% (str_split(.,",")[[1]]) %>>% 
+  unique %>>% length
+paste(cna_common_resist$cohort,collapse=",") %>>% (str_split(.,",")[[1]]) %>>% 
+  unique %>>% length
+writeLines(sc_resist_cna,"~/Documents/cohort/ESCC/for_NEJM/sc_resist_cna.txt")
+writeLines(cohort_resist_cna,
+           "~/Documents/cohort/ESCC/for_NEJM/cohort_resist_cna.txt")
+write.csv(cna_common_resist,
+          file="~/Documents/cohort/ESCC/for_NEJM/cna_common_resist.csv")
+
+# Genes and sc_cnv
+sc_resist_cna_genes <- cnv_23[sc_resist_cna,"an23.Genes"] %>>% 
+  paste(collapse=",") %>>% (str_split(.,",")[[1]]) %>>% unique
+paste(sub("chr(.*)_(.*)_(.*)","\\1",cohort_resist_cna),
+      sub("chr(.*)_(.*)_(.*)","\\2",cohort_resist_cna),
+      sub("chr(.*)_(.*)_(.*)","\\3",cohort_resist_cna),
+      "0","-",sep="\t") %>>% 
+  writeLines(
+    "~/Documents/cohort/ESCC/for_NEJM/cohort_resist_cna.avinput")
+genes_cohort_resist_cna <- readLines(
+  "~/Documents/cohort/ESCC/for_NEJM/cohort_resist_cna.avoutput.hg19_bed") %>>% 
+  (sapply(.,sub,pattern="(.*)Name=(.*)\t(.*)$",replacement="\\2")) %>>% 
+  paste(collapse=",") %>>% (str_split(.,",")[[1]]) %>>% unique
+#18 * 18 pdf
+grid.newpage()
+draw.triple.venn(21,14170,4363,15,2411,8,6,
+                 c("Radioresistant genes in single-cell SNV",
+                   "Radioresistant genes in single-cell CNA",
+                   "Radioresistant genes in cohort CNA"),
+                 fill=c("#00468BFF","#ED0000FF","#42B540FF"),
+                 cat.col=c("#00468BFF","#ED0000FF","#42B540FF"),
+                 cex=6,cat.cex=2.5,cat.pos=c(-15,18,180),lty=1:3,
+                 cat.just=list(c(0.5,0),c(0.5,1),c(0.5,1)))
+# ------
